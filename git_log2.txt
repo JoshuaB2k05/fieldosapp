@@ -1,0 +1,3 @@
+99b65cb Configure Vite for Netlify Deployment
+e584e99 Fix asset paths and add deployment config
+5621b7a Deploy latest version
