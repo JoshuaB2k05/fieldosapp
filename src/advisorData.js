@@ -117,7 +117,7 @@ export const OPERATIONS = {
 // C = Effective Field Capacity (ha/day/machine)
 // D = Workable Days available for the operation
 // T = Timeliness Index (efficiency factor, usually 0.6 to 0.9)
-export const calculateRequiredImplements(areaHa, capacityDelta, daysDelta) {
+export function calculateRequiredImplements(areaHa, capacityDelta, daysDelta) {
     return function (implement) {
         const C = implement.capacityHaPerDay * (1 + (capacityDelta || 0));
         const D = implement.workableDays + (daysDelta || 0);

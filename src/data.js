@@ -369,38 +369,32 @@ window.D.SAMPLE_NOTIFICATIONS = [
 
 // ---- Helper functions ----
 
-window.D = window.D || {};
-window.D.formatCurrency(amount) {
+export function formatCurrency(amount) {
     if (amount >= 10000000) return `₹${(amount / 10000000).toFixed(2)} Cr`;
     if (amount >= 100000) return `₹${(amount / 100000).toFixed(2)} L`;
     if (amount >= 1000) return `₹${amount.toLocaleString('en-IN')}`;
     return `₹${amount}`;
 }
 
-window.D = window.D || {};
-window.D.formatNumber(num) {
+export function formatNumber(num) {
     return num.toLocaleString('en-IN');
 }
 
-window.D = window.D || {};
-window.D.getChangePercent(current, previous) {
+export function getChangePercent(current, previous) {
     return (((current - previous) / previous) * 100).toFixed(1);
 }
 
-window.D = window.D || {};
-window.D.getCurrentSeason() {
+export function getCurrentSeason() {
     const month = new Date().getMonth() + 1;
     if (month >= 6 && month <= 10) return 'kharif';
     if (month >= 11 || month <= 3) return 'rabi';
     return 'zaid';
 }
 
-window.D = window.D || {};
-window.D.getWeatherIcon(code) {
+export function getWeatherIcon(code) {
     return WEATHER_CODES[code]?.icon || '🌤️';
 }
 
-window.D = window.D || {};
-window.D.getWeatherDesc(code) {
+export function getWeatherDesc(code) {
     return WEATHER_CODES[code]?.desc || 'Unknown';
 }
