@@ -102,3 +102,65 @@ export async function getImplementsCount(block, category) {
         }).length;
     }
 }
+
+/**
+ * Add a fuel subsidy to a farmer's wallet
+ * @param {string} aadhar - Farmer's Aadhar number (Wallet ID)
+ * @param {number} amount - Reward amount in rupees
+ * @param {string} source - How they earned it (e.g. "Rotavator Registration")
+ */
+export async function addFuelSubsidy(aadhar, amount, source) {
+    if (isConfigured) {
+        try {
+            const walletRef = collection(db, 'fuel_wallet');
+
+            // Generate a random coupon code
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = 'FUEL-';
+            for (let i = 0; i < 8; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+
+            await addDoc(walletRef, {
+                aadhar,
+                amount,
+                source,
+                code,
+                status: 'Available',
+                timestamp: new Date()
+            });
+            return { code, amount };
+        } catch (e) {
+            console.error("Error adding fuel subsidy: ", e);
+            throw e;
+        }
+    } else {
+        return { code: 'MOCK-FUEL-123', amount };
+    }
+}
+
+/**
+ * Fetch all fuel subsidies for a given Aadhar
+ * @param {string} aadhar 
+ */
+export async function getSubsidiesByAadhar(aadhar) {
+    if (isConfigured) {
+        try {
+            const walletRef = collection(db, 'fuel_wallet');
+            const q = query(walletRef, where('aadhar', '==', aadhar));
+            const querySnapshot = await getDocs(q);
+
+            const subsidies = [];
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                subsidies.push({ id: doc.id, ...data });
+            });
+
+            // Sort by newest first
+            return subsidies.sort((a, b) => b.timestamp - a.timestamp);
+        } catch (e) {
+            console.error("Error fetching subsidies: ", e);
+            return [];
+        }
+    } else {
+        return [];
+    }
+}

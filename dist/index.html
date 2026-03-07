@@ -13,8 +13,8 @@
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌾</text></svg>" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet" />
-  <script type="module" crossorigin src="/assets/index-CYa1FReq.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-pdeywJmC.css">
+  <script type="module" crossorigin src="./assets/index-BR3gbp1z.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-DSA9ew6B.css">
 </head>
 
 <body>
@@ -72,6 +72,9 @@
                     </div>
                 </div>
                 <div class="topbar-right">
+                    <button class="topbar-btn wallet-btn" id="walletBtn" title="Fuel Subsidy Wallet">
+                        <span style="font-size: 18px;">💳</span>
+                    </button>
                     <button class="topbar-btn notification-btn" id="notifBtn" title="Notifications">
                         🔔 <span class="notif-badge">3</span>
                     </button>
@@ -103,6 +106,17 @@
             <button class="notif-close" id="notifClose">✕</button>
         </div>
         <div class="notif-list" id="notifList"></div>
+    </div>
+
+    <!-- Fuel Subsidy Wallet Panel -->
+    <div class="wallet-panel" id="walletPanel">
+        <div class="wallet-header">
+            <h3>💳 Fuel Subsidy Wallet</h3>
+            <button class="wallet-close" id="walletClose">✕</button>
+        </div>
+        <div class="wallet-body" id="walletBody">
+            <!-- Wallet content injected here -->
+        </div>
     </div>
 
     <!-- Modal Container -->

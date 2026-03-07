@@ -70,6 +70,9 @@
                     </div>
                 </div>
                 <div class="topbar-right">
+                    <button class="topbar-btn wallet-btn" id="walletBtn" title="Fuel Subsidy Wallet">
+                        <span style="font-size: 18px;">💳</span>
+                    </button>
                     <button class="topbar-btn notification-btn" id="notifBtn" title="Notifications">
                         🔔 <span class="notif-badge">3</span>
                     </button>
@@ -101,6 +104,17 @@
             <button class="notif-close" id="notifClose">✕</button>
         </div>
         <div class="notif-list" id="notifList"></div>
+    </div>
+
+    <!-- Fuel Subsidy Wallet Panel -->
+    <div class="wallet-panel" id="walletPanel">
+        <div class="wallet-header">
+            <h3>💳 Fuel Subsidy Wallet</h3>
+            <button class="wallet-close" id="walletClose">✕</button>
+        </div>
+        <div class="wallet-body" id="walletBody">
+            <!-- Wallet content injected here -->
+        </div>
     </div>
 
     <!-- Modal Container -->

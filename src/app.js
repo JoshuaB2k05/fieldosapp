@@ -2,7 +2,95 @@ import './style.css';
 import Chart from 'chart.js/auto';
 import * as D from './data.js';
 import * as AD from './advisorData.js';
-import { addImplementRegistration, getImplementsCount } from './firebase.js';
+import { addImplementRegistration, getImplementsCount, addFuelSubsidy, getSubsidiesByAadhar } from './firebase.js';
+
+// ---- Wallet State ----
+let currentWalletAadhar = localStorage.getItem('walletAadhar') || '';
+
+async function renderWalletView() {
+  const wb = document.getElementById('walletBody');
+  if (!currentWalletAadhar) {
+    wb.innerHTML = `
+            <div style="text-align:center; padding: 20px 0;">
+                <p style="color:var(--text-2); margin-bottom:16px; font-size:14px;">Enter your Aadhar number to view your earned Fuel Subsidies.</p>
+                <div class="wallet-input-group">
+                    <input type="text" id="walletAadharInput" placeholder="12-digit Aadhar" pattern="\\d{12}" />
+                    <button class="btn btn-primary" id="walletLoginBtn">View Wallet</button>
+                </div>
+            </div>
+        `;
+    document.getElementById('walletLoginBtn').addEventListener('click', () => {
+      const val = document.getElementById('walletAadharInput').value;
+      if (val.length === 12) {
+        currentWalletAadhar = val;
+        localStorage.setItem('walletAadhar', val);
+        renderWalletView();
+      } else {
+        window.showToast('Please enter a valid 12-digit Aadhar number.', false);
+      }
+    });
+    return;
+  }
+
+  wb.innerHTML = `<div class="loading-spinner visible" style="padding:40px 0"><div class="spinner"></div></div>`;
+
+  // Fetch subsidies
+  const subsidies = await getSubsidiesByAadhar(currentWalletAadhar);
+
+  const balance = subsidies.reduce((sum, item) => sum + item.amount, 0);
+
+  let html = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+            <div style="font-size:11px; color:var(--text-3)">Aadhar:  •••• •••• ${currentWalletAadhar.slice(-4)}</div>
+            <button class="btn btn-sm btn-outline" id="walletLogoutBtn" style="padding: 4px 8px; font-size: 10px;">Change</button>
+        </div>
+        <div class="wallet-balance-card">
+            <div class="wb-label">Total Fuel Subsidy</div>
+            <div class="wb-amount"><span>₹</span>${balance.toLocaleString('en-IN')}</div>
+            <div style="font-size: 13px; opacity:0.9; margin-top: 4px;">Available across ${subsidies.length} coupons</div>
+        </div>
+        <h4 style="font-size: 14px; margin-top: 8px; color: var(--text-2);">Your Coupons</h4>
+    `;
+
+  if (subsidies.length === 0) {
+    html += `
+            <div style="text-align:center; padding: 30px 0;">
+                <div style="font-size: 40px; margin-bottom:12px; filter: grayscale(1); opacity:0.5">⛽</div>
+                <div style="color:var(--text-2); font-size:13px">No fuel subsidies yet.</div>
+                <div style="color:var(--text-3); font-size:11px; margin-top:4px">Register implements to earn rewards!</div>
+            </div>
+        `;
+  } else {
+    html += `<div style="display:flex; flex-direction:column; gap:12px">`;
+    subsidies.forEach(sub => {
+      const date = sub.timestamp?.seconds ? new Date(sub.timestamp.seconds * 1000).toLocaleDateString() : new Date().toLocaleDateString();
+      html += `
+                <div class="wallet-coupon">
+                    <div class="wc-top">
+                        <div>
+                            <div class="wc-title">${sub.source}</div>
+                            <div class="wc-date">Earned on ${date}</div>
+                        </div>
+                        <div class="wc-amount">₹${sub.amount.toLocaleString('en-IN')}</div>
+                    </div>
+                    <div class="wc-code">${sub.code}</div>
+                </div>
+            `;
+    });
+    html += `</div>`;
+  }
+
+  wb.innerHTML = html;
+
+  const logoutBtn = document.getElementById('walletLogoutBtn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      currentWalletAadhar = '';
+      localStorage.removeItem('walletAadhar');
+      renderWalletView();
+    });
+  }
+}
 
 // ---- State ----
 let currentPage = 'dashboard';
@@ -59,9 +147,23 @@ function setupGlobalEvents() {
   document.getElementById('sidebarOverlay').addEventListener('click', toggleMobile);
   document.getElementById('notifBtn').addEventListener('click', () => {
     document.getElementById('notifPanel').classList.toggle('open');
+    document.getElementById('walletPanel').classList.remove('open');
   });
   document.getElementById('notifClose').addEventListener('click', () => {
     document.getElementById('notifPanel').classList.remove('open');
+  });
+
+  // Wallet Events
+  document.getElementById('walletBtn').addEventListener('click', () => {
+    const panel = document.getElementById('walletPanel');
+    panel.classList.toggle('open');
+    document.getElementById('notifPanel').classList.remove('open');
+    if (panel.classList.contains('open')) {
+      renderWalletView();
+    }
+  });
+  document.getElementById('walletClose').addEventListener('click', () => {
+    document.getElementById('walletPanel').classList.remove('open');
   });
 }
 
@@ -365,12 +467,38 @@ function renderRegistration(el) {
       // Send to Firebase DB
       await addImplementRegistration(data);
 
-      // Calculate reward
+      // --- FUEL SUBSIDY CALCULATION ---
+      // User requested: 10-20% of the Gov Subsidy amount
+      let govSubsidyAmount = 0;
+      if (typeof data.subsidy === 'string' && data.subsidy.includes('%')) {
+        // It's a percentage, calculate from total amount
+        const perc = parseInt(data.subsidy.replace('%', ''));
+        govSubsidyAmount = Math.round(data.amount * (perc / 100));
+      } else {
+        // It's a flat number
+        govSubsidyAmount = parseInt(data.subsidy) || 0;
+      }
+
+      // Calculate 10-20% of the Gov Subsidy
       const rewardPerc = Math.floor(Math.random() * 11) + 10; // 10 to 20
+      const fuelSubsidyAmount = Math.round(govSubsidyAmount * (rewardPerc / 100));
+
+      // Save Fuel Subsidy to Wallet DB
+      let couponCode = '';
+      if (fuelSubsidyAmount > 0) {
+        const rewardRes = await addFuelSubsidy(data.aadhar, fuelSubsidyAmount, `Registration: ${data.name} (${data.type})`);
+        couponCode = rewardRes.code;
+      }
 
       document.getElementById('implForm').reset();
 
-      alert(`🎉 Registration Successful!\n\nThank you for contributing to the ${data.district} District Implement Database.\n\n🎁 REWARD: You have earned an EXTRA ${rewardPerc}% SUBSIDY on your next agricultural machinery purchase/rental!\n\nYour existing equipment is now live and will help reduce the required implements calculated in the ${data.block} block.`);
+      let alertMsg = `🎉 Registration Successful!\n\nThank you for contributing to the ${data.district} District Implement Database.\n\nYour implement is now live.`;
+
+      if (fuelSubsidyAmount > 0) {
+        alertMsg += `\n\n🎁 REWARD UNLOCKED: You have earned a ₹${fuelSubsidyAmount.toLocaleString('en-IN')} Fuel Subsidy (${rewardPerc}% of your Gov Subsidy)!\n\nYour Coupon Code: ${couponCode}\n\nClick the 💳 Wallet icon at the top of the screen to view your subsidies.`;
+      }
+
+      alert(alertMsg);
 
       window.showToast('Implement registered successfully!', true);
     } catch (err) {
