@@ -1,9 +1,12 @@
 import './style.css';
 import { addImplementRegistration, getImplementsCount, addFuelSubsidy, getSubsidiesByAadhar } from './firebase.js';
+import * as D from './data.js';
+import * as AD from './advisorData.js';
+import Chart from 'chart.js/auto';
 
-const D = window.D;
-const AD = window.AD;
-const Chart = window.Chart;
+window.D = D;
+window.AD = AD;
+window.Chart = Chart;
 
 // ---- Wallet State ----
 let currentWalletAadhar = localStorage.getItem('walletAadhar') || '';

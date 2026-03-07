@@ -2,7 +2,7 @@
 // AGRI ADVISOR & CALCULATOR DATA
 // ============================================================
 
-window.TN_DISTRICTS = [
+export const TN_DISTRICTS = [
     'Ariyalur', 'Chengalpattu', 'Chennai', 'Coimbatore', 'Cuddalore', 'Dharmapuri', 'Dindigul',
     'Erode', 'Kallakurichi', 'Kanchipuram', 'Kanyakumari', 'Karur', 'Krishnagiri', 'Madurai',
     'Mayiladuthurai', 'Nagapattinam', 'Namakkal', 'Nilgiris', 'Perambalur', 'Pudukkottai',
@@ -11,7 +11,7 @@ window.TN_DISTRICTS = [
     'Tiruvannamalai', 'Tiruvarur', 'Vellore', 'Viluppuram', 'Virudhunagar'
 ];
 
-window.TN_BLOCKS = {
+export const TN_BLOCKS = {
     'Ariyalur': ['Andimadam', 'Ariyalur', 'Jayankondam', 'Sendurai', 'T. Palur', 'Thirumanur'],
     'Chengalpattu': ['Acharapakkam', 'Cheyyur', 'Kattankulathur', 'Lathur', 'Madhuranthakam', 'St. Thomas Mount', 'Thiruporur', 'Tirukalukundram'],
     'Chennai': ['Adyar', 'Alandur', 'Ambattur', 'Anna Nagar', 'Kodambakkam', 'Madhavaram', 'Manali', 'Perungudi', 'Royapuram', 'Sholinganallur', 'Teynampet', 'Thiru. Vi. Ka. Nagar', 'Tiruvottiyur', 'Tondiarpet', 'Valasaravakkam'],
@@ -53,7 +53,7 @@ window.TN_BLOCKS = {
     'default': ['Block 1', 'Block 2', 'Block 3', 'Block 4', 'Block 5']
 };
 
-window.CROPS = {
+export const CROPS = {
     paddy: { name: 'Paddy (Rice)', nameHi: 'धान', nameTa: 'நெல்', season: 'Kharif/Rabi', water: 'High' },
     sugarcane: { name: 'Sugarcane', nameHi: 'गन्ना', nameTa: 'கரும்பு', season: 'Annual', water: 'High' },
     cotton: { name: 'Cotton', nameHi: 'कपास', nameTa: 'பருத்தி', season: 'Kharif', water: 'Medium' },
@@ -64,7 +64,7 @@ window.CROPS = {
     vegetables: { name: 'Vegetables', nameHi: 'सब्जियां', nameTa: 'காய்கறிகள்', season: 'All', water: 'Medium' }
 };
 
-window.OPERATIONS = {
+export const OPERATIONS = {
     tillage: {
         id: 'tillage', name: 'Land Preparation / Tillage', nameTa: 'நிலம் உழுதல்',
         desc: 'Deep ploughing and secondary tillage for seedbed preparation',
@@ -117,7 +117,7 @@ window.OPERATIONS = {
 // C = Effective Field Capacity (ha/day/machine)
 // D = Workable Days available for the operation
 // T = Timeliness Index (efficiency factor, usually 0.6 to 0.9)
-window.calculateRequiredImplements(areaHa, capacityDelta, daysDelta) {
+export const calculateRequiredImplements(areaHa, capacityDelta, daysDelta) {
     return function (implement) {
         const C = implement.capacityHaPerDay * (1 + (capacityDelta || 0));
         const D = implement.workableDays + (daysDelta || 0);
@@ -133,7 +133,7 @@ window.calculateRequiredImplements(areaHa, capacityDelta, daysDelta) {
 // CROP SEASON PLANNER DATA (NEW)
 // ============================================================
 
-window.SOIL_TYPES = {
+export const SOIL_TYPES = {
     red: { id: 'red', name: 'Red Soil', nameTa: 'செம்மண்' },
     black: { id: 'black', name: 'Black Soil (Cotton)', nameTa: 'கரிசல் மண்' },
     alluvial: { id: 'alluvial', name: 'Alluvial Soil', nameTa: 'வண்டல் மண்' },
@@ -141,7 +141,7 @@ window.SOIL_TYPES = {
     saline: { id: 'saline', name: 'Saline/Alkaline Soil', nameTa: 'களர் மண்' }
 };
 
-window.CROP_LIFECYCLE_DATA = {
+export const CROP_LIFECYCLE_DATA = {
     paddy: {
         id: 'paddy', name: 'Paddy (Rice)', nameTa: 'நெல்',
         suitableSoils: ['alluvial', 'red'],
@@ -212,7 +212,7 @@ window.CROP_LIFECYCLE_DATA = {
 };
 
 // District-wise Storage & Logistics Data Mappings
-window.LOGISTICS_DATA = {
+export const LOGISTICS_DATA = {
     'default': {
         coldStorage: [
             { name: 'State Agri Cold Storage API', cap: '5,000 MT', temp: '2°C to 10°C', dist: '5km' },
