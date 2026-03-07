@@ -1,8 +1,9 @@
 import './style.css';
-import Chart from 'chart.js/auto';
-import * as D from './data.js';
-import * as AD from './advisorData.js';
 import { addImplementRegistration, getImplementsCount, addFuelSubsidy, getSubsidiesByAadhar } from './firebase.js';
+
+const D = window.D;
+const AD = window.AD;
+const Chart = window.Chart;
 
 // ---- Wallet State ----
 let currentWalletAadhar = localStorage.getItem('walletAadhar') || '';
@@ -92,11 +93,11 @@ async function renderWalletView() {
   }
 }
 
-// ---- State ----
-let currentPage = 'dashboard';
-let charts = [];
-let theme = localStorage.getItem('theme') || 'dark';
-let currentLang = localStorage.getItem('lang') || 'en';
+// ---- Global State ----
+window.theme = localStorage.getItem('theme') || 'dark';
+window.currentLang = localStorage.getItem('lang') || 'en';
+window.charts = [];
+window.currentPage = 'advisor';
 
 // ---- AI Translation Dictionary ----
 const I18N = {
@@ -167,11 +168,11 @@ const NAV = [
   { id: 'advisor', label: 'A-Z Agri Advisor', icon: '🧠', trans: { hi: 'कृषि सलाहकार', ta: 'வேளாண் வழிகாட்டி', te: 'వ్యవసాయ సలహాదారు', kn: 'ಕೃಷಿ ಸಲಹೆಗಾರ' } },
   { id: 'dashboard', label: 'Dashboard', icon: '📊', trans: { hi: 'डैशबोर्ड', ta: 'முகப்பு', te: 'డ్యాష్‌బోర్డ్', kn: 'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್' } },
   { id: 'register', label: 'Register Implement', icon: '🚜', trans: { hi: 'पंजीकरण', ta: 'பதிவு செய்', te: 'నమోదు చేయండి', kn: 'ನೋಂದಣಿ ಮಾಡಿ' } },
-  { id: 'implements', label: 'Implements', icon: '🚜', trans: { hi: 'कृषि यंत्र', ta: 'கருவிகள்', te: 'పనిముట్లు', kn: 'ಉಪಕರಣಗಳು' } },
+  { id: 'implements', label: 'Implements', icon: '🚜', trans: { hi: 'कृषि यंत्र', ta: 'கருவிகள்', te: 'పనిமுట్లు', kn: 'ಉಪಕರಣಗಳು' } },
   { id: 'subsidy', label: 'Subsidy Calculator', icon: '💰', trans: { hi: 'सब्सिडी', ta: 'மானியம்', te: 'సబ్సిడీ', kn: 'ಸಬ್ಸಿಡಿ' } },
   { id: 'hiring', label: 'Custom Hiring', icon: '🤝', trans: { hi: 'कस्टम हायरिंग', ta: 'வாடகைக்கு', te: 'అద్దెకు', kn: 'ಬಾಡಿಗೆಗೆ' } },
   { id: 'marketplace', label: 'Marketplace', icon: '🏪', trans: { hi: 'बाज़ार', ta: 'சந்தை', te: 'మార్కెట్', kn: 'ಮಾರುಕಟ್ಟೆ' } },
-  { id: 'weather', label: 'Weather & IMD', icon: '🌤️', trans: { hi: 'मौसम', ta: 'வானிலை', te: 'వాతావరణం', kn: 'ಹವಾಮಾನ' } },
+  { id: 'weather', label: 'Weather & IMD', icon: '🌤️', trans: { hi: 'मौसम', ta: 'வானிலை', te: 'వాతಾವರಣం', kn: 'ಹವಾಮಾನ' } },
   { id: 'schemes', label: 'Gov Schemes', icon: '🏛️', trans: { hi: 'सरकारी योजनाएं', ta: 'அரசு திட்டங்கள்', te: 'ప్రభుత్వ పథకాలు', kn: 'ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು' } },
   { id: 'legal', label: 'Legal & Compliance', icon: '⚖️', trans: { hi: 'कानूनी और अनुपालन', ta: 'சட்டரீதியான', te: 'చట్టపరమైన', kn: 'ಕಾನೂನು ರೂಪ' } },
   { id: 'admin', label: 'Admin Panel', icon: '⚙️', trans: { hi: 'प्रशासन', ta: 'நிர்வாகம்', te: 'నిర్వహణ', kn: 'ಆಡಳಿತ' } },
@@ -182,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
   applyTheme();
   renderNav();
   renderNotifications();
-  navigate('advisor');
+  window.navigate('advisor');
   setupGlobalEvents();
 });
 
@@ -197,16 +198,16 @@ window.showToast = function (msg, isSuccess = true) {
 }
 
 function applyTheme() {
-  if (theme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+  if (window.theme === 'light') document.documentElement.setAttribute('data-theme', 'light');
   else document.documentElement.removeAttribute('data-theme');
   const btn = document.getElementById('themeToggle');
-  if (btn) btn.textContent = theme === 'light' ? '☀️' : '🌙';
+  if (btn) btn.textContent = window.theme === 'light' ? '☀️' : '🌙';
 }
 
 function setupGlobalEvents() {
   document.getElementById('themeToggle').addEventListener('click', () => {
-    theme = theme === 'dark' ? 'light' : 'dark';
-    localStorage.setItem('theme', theme);
+    window.theme = window.theme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('theme', window.theme);
     applyTheme();
   });
   document.getElementById('mobileMenuBtn').addEventListener('click', toggleMobile);
@@ -234,7 +235,7 @@ function setupGlobalEvents() {
   // Language Switcher (AI Translation Simulation)
   const langSelect = document.getElementById('langSwitch');
   if (langSelect) {
-    langSelect.value = currentLang;
+    langSelect.value = window.currentLang;
     langSelect.addEventListener('change', (e) => {
       applyTranslation(e.target.value);
     });
@@ -242,8 +243,8 @@ function setupGlobalEvents() {
 }
 
 function applyTranslation(lang) {
-  if (lang === currentLang) return;
-  currentLang = lang;
+  if (lang === window.currentLang) return;
+  window.currentLang = lang;
   localStorage.setItem('lang', lang);
 
   const langName = lang === 'en' ? 'English' : I18N[lang]?.langName || lang;
@@ -259,7 +260,7 @@ function applyTranslation(lang) {
     if (searchBox) searchBox.placeholder = I18N[lang]?.search || I18N['en'].search;
 
     // Re-render current page
-    navigate(currentPage);
+    window.navigate(window.currentPage);
 
     // Remove blur
     setTimeout(() => {
@@ -277,32 +278,32 @@ function toggleMobile() {
 function renderNav() {
   const nav = document.getElementById('sidebarNav');
   nav.innerHTML = NAV.map(n => {
-    const displayLabel = currentLang === 'en' ? n.label : (n.trans[currentLang] || n.label);
+    const displayLabel = window.currentLang === 'en' ? n.label : (n.trans[window.currentLang] || n.label);
     return `
-    <a class="nav-item ${n.id === currentPage ? 'active' : ''}" data-page="${n.id}">
+    <a class="nav-item ${n.id === window.currentPage ? 'active' : ''}" data-page="${n.id}">
       <span class="nav-icon">${n.icon}</span>
       <span class="nav-label">${displayLabel}</span>
     </a>
   `;
   }).join('');
   nav.querySelectorAll('.nav-item').forEach(el => {
-    el.addEventListener('click', () => navigate(el.dataset.page));
+    el.addEventListener('click', () => window.navigate(el.dataset.page));
   });
 
   // Re-translate the government badge in the footer
   const govBadge = document.getElementById('govBadgeText');
   if (govBadge) {
-    govBadge.textContent = I18N[currentLang]?.govLabel || I18N['en'].govLabel;
+    govBadge.textContent = I18N[window.currentLang]?.govLabel || I18N['en'].govLabel;
   }
 }
 
-function navigate(page) {
-  currentPage = page;
-  charts.forEach(c => { try { c.destroy(); } catch (e) { } });
-  charts = [];
+window.navigate = function navigate(page) {
+  window.currentPage = page;
+  window.charts.forEach(c => { try { c.destroy(); } catch (e) { } });
+  window.charts = [];
   renderNav();
   const info = NAV.find(n => n.id === page);
-  const displayLabel = currentLang === 'en' ? info.label : (info.trans[currentLang] || info.label);
+  const displayLabel = window.currentLang === 'en' ? info.label : (info.trans[window.currentLang] || info.label);
   document.getElementById('breadcrumb').innerHTML = `<span class="breadcrumb-icon">${info?.icon || ''}</span><span class="breadcrumb-text">${displayLabel || ''}</span>`;
   const el = document.getElementById('mainContent');
   // Close mobile sidebar
@@ -431,9 +432,9 @@ function renderDashboard(el) {
   `;
 
   // Charts
-  const bd = D.BLOCK_DATA.implementBreakdown;
+  const bd = window.D.BLOCK_DATA.implementBreakdown;
   const labels = Object.keys(bd);
-  charts.push(new Chart(document.getElementById('implChart'), {
+  window.charts.push(new Chart(document.getElementById('implChart'), {
     type: 'bar',
     data: {
       labels,
@@ -445,8 +446,8 @@ function renderDashboard(el) {
     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-2').trim() } } }, scales: { x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } }, y: { ticks: { color: '#94a3b8' }, grid: { color: 'var(--glass-strong)' } } } }
   }));
 
-  const topCrops = D.MSP_KHARIF.slice(0, 6);
-  charts.push(new Chart(document.getElementById('mspChart'), {
+  const topCrops = window.D.MSP_KHARIF.slice(0, 6);
+  window.charts.push(new Chart(document.getElementById('mspChart'), {
     type: 'line',
     data: {
       labels: topCrops.map(c => c.crop.split(' ')[0]),
