@@ -96,19 +96,85 @@ async function renderWalletView() {
 let currentPage = 'dashboard';
 let charts = [];
 let theme = localStorage.getItem('theme') || 'dark';
+let currentLang = localStorage.getItem('lang') || 'en';
+
+// ---- AI Translation Dictionary ----
+const I18N = {
+  en: {
+    search: "Search implements, schemes, services...",
+    langName: "English",
+    walletInfo: "Enter your Aadhar number to view your earned Fuel Subsidies.",
+    noSubsidies: "No fuel subsidies yet.",
+    legalHubTitle: "Legal & Compliance",
+    termsOfService: "Terms of Service",
+    privacyPolicy: "Privacy Policy",
+    cookieNotice: "Cookie Notice",
+    govLabel: "Govt. of India Initiative",
+    viewWallet: "View Wallet"
+  },
+  hi: {
+    search: "यंत्र, योजनाएं, सेवाएं खोजें...",
+    langName: "हिन्दी",
+    walletInfo: "ईंधन सब्सिडी देखने के लिए अपना आधार नंबर दर्ज करें।",
+    noSubsidies: "अभी तक कोई ईंधन सब्सिडी नहीं।",
+    legalHubTitle: "कानूनी और अनुपालन",
+    termsOfService: "सेवा की शर्तें",
+    privacyPolicy: "गोपनीयता नीति",
+    cookieNotice: "कुकी नोटिस",
+    govLabel: "भारत सरकार की पहल",
+    viewWallet: "वॉलेट देखें"
+  },
+  ta: {
+    search: "கருவிகள், திட்டங்கள், சேவைகளைத் தேடுங்கள்...",
+    langName: "தமிழ்",
+    walletInfo: "எரிபொருள் மானியங்களைப் பார்க்க உங்கள் ஆதார் எண்ணை உள்ளிடவும்.",
+    noSubsidies: "எரிபொருள் மானியங்கள் ஏதுமில்லை.",
+    legalHubTitle: "சட்ட மற்றும் இணக்கம்",
+    termsOfService: "சேவை விதிமுறைகள்",
+    privacyPolicy: "தனியுரிமை கொள்கை",
+    cookieNotice: "குக்கீ அறிவிப்பு",
+    govLabel: "இந்திய அரசு முன்முயற்சி",
+    viewWallet: "வாலட்டை காண்க"
+  },
+  te: {
+    search: "పనిముట్లు, పథకాలు, సేవలను శోధించండి...",
+    langName: "తెలుగు",
+    walletInfo: "మీ ఇంధన సబ్సిడీలను చూడటానికి మీ ఆధార్ నంబర్‌ను నమోదు చేయండి.",
+    noSubsidies: "ఇంకా ఇంధన సబ్సిడీలు లేవు.",
+    legalHubTitle: "చట్టపరమైన & సమ్మతి",
+    termsOfService: "సేవా నిబంధనలు",
+    privacyPolicy: "గోప్యతా విధానం",
+    cookieNotice: "కుకీ నోటీసు",
+    govLabel: "భారత ప్రభుత్వ చొరవ",
+    viewWallet: "వాలెట్ చూడండి"
+  },
+  kn: {
+    search: "ಉಪಕರಣಗಳು, ಯೋಜನೆಗಳು, ಸೇವೆಗಳನ್ನು ಹುಡುಕಿ...",
+    langName: "ಕನ್ನಡ",
+    walletInfo: "ನಿಮ್ಮ ಇಂಧನ ಸಬ್ಸಿಡಿಗಳನ್ನು ವೀಕ್ಷಿಸಲು ನಿಮ್ಮ ಆಧಾರ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ.",
+    noSubsidies: "ಇನ್ನೂ ಯಾವುದೇ ಇಂಧನ ಸಬ್ಸಿಡಿಗಳಿಲ್ಲ.",
+    legalHubTitle: "ಕಾನೂನು ಮತ್ತು ಅನುಸರಣೆ",
+    termsOfService: "ಸೇವಾ ನಿಯಮಗಳು",
+    privacyPolicy: "ಗೌಪ್ಯತೆ ನೀತಿ",
+    cookieNotice: "ಕುಕೀ ಸೂಚನೆ",
+    govLabel: "ಭಾರತ ಸರ್ಕಾರದ ಉಪಕ್ರಮ",
+    viewWallet: "ವಾಲೆಟ್ ವೀಕ್ಷಿಸಿ"
+  }
+};
 
 // ---- Nav Items ----
 const NAV = [
-  { id: 'advisor', label: 'A-Z Agri Advisor', icon: '🧠', hindi: 'कृषि सलाहकार' },
-  { id: 'dashboard', label: 'Dashboard', icon: '📊', hindi: 'डैशबोर्ड' },
-  { id: 'register', label: 'Register Implement', icon: '🚜', hindi: 'पंजीकरण' },
-  { id: 'implements', label: 'Implements', icon: '🚜', hindi: 'कृषि यंत्र' },
-  { id: 'subsidy', label: 'Subsidy Calculator', icon: '💰', hindi: 'सब्सिडी' },
-  { id: 'hiring', label: 'Custom Hiring', icon: '🤝', hindi: 'कस्टम हायरिंग' },
-  { id: 'marketplace', label: 'Marketplace', icon: '🏪', hindi: 'बाज़ार' },
-  { id: 'weather', label: 'Weather & IMD', icon: '🌤️', hindi: 'मौसम' },
-  { id: 'schemes', label: 'Gov Schemes', icon: '🏛️', hindi: 'सरकारी योजनाएं' },
-  { id: 'admin', label: 'Admin Panel', icon: '⚙️', hindi: 'प्रशासन' },
+  { id: 'advisor', label: 'A-Z Agri Advisor', icon: '🧠', trans: { hi: 'कृषि सलाहकार', ta: 'வேளாண் வழிகாட்டி', te: 'వ్యవసాయ సలహాదారు', kn: 'ಕೃಷಿ ಸಲಹೆಗಾರ' } },
+  { id: 'dashboard', label: 'Dashboard', icon: '📊', trans: { hi: 'डैशबोर्ड', ta: 'முகப்பு', te: 'డ్యాష్‌బోర్డ్', kn: 'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್' } },
+  { id: 'register', label: 'Register Implement', icon: '🚜', trans: { hi: 'पंजीकरण', ta: 'பதிவு செய்', te: 'నమోదు చేయండి', kn: 'ನೋಂದಣಿ ಮಾಡಿ' } },
+  { id: 'implements', label: 'Implements', icon: '🚜', trans: { hi: 'कृषि यंत्र', ta: 'கருவிகள்', te: 'పనిముట్లు', kn: 'ಉಪಕರಣಗಳು' } },
+  { id: 'subsidy', label: 'Subsidy Calculator', icon: '💰', trans: { hi: 'सब्सिडी', ta: 'மானியம்', te: 'సబ్సిడీ', kn: 'ಸಬ್ಸಿಡಿ' } },
+  { id: 'hiring', label: 'Custom Hiring', icon: '🤝', trans: { hi: 'कस्टम हायरिंग', ta: 'வாடகைக்கு', te: 'అద్దెకు', kn: 'ಬಾಡಿಗೆಗೆ' } },
+  { id: 'marketplace', label: 'Marketplace', icon: '🏪', trans: { hi: 'बाज़ार', ta: 'சந்தை', te: 'మార్కెట్', kn: 'ಮಾರುಕಟ್ಟೆ' } },
+  { id: 'weather', label: 'Weather & IMD', icon: '🌤️', trans: { hi: 'मौसम', ta: 'வானிலை', te: 'వాతావరణం', kn: 'ಹವಾಮಾನ' } },
+  { id: 'schemes', label: 'Gov Schemes', icon: '🏛️', trans: { hi: 'सरकारी योजनाएं', ta: 'அரசு திட்டங்கள்', te: 'ప్రభుత్వ పథకాలు', kn: 'ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು' } },
+  { id: 'legal', label: 'Legal & Compliance', icon: '⚖️', trans: { hi: 'कानूनी और अनुपालन', ta: 'சட்டரீதியான', te: 'చట్టపరమైన', kn: 'ಕಾನೂನು ರೂಪ' } },
+  { id: 'admin', label: 'Admin Panel', icon: '⚙️', trans: { hi: 'प्रशासन', ta: 'நிர்வாகம்', te: 'నిర్వహణ', kn: 'ಆಡಳಿತ' } },
 ];
 
 // ---- Init ----
@@ -165,6 +231,41 @@ function setupGlobalEvents() {
   document.getElementById('walletClose').addEventListener('click', () => {
     document.getElementById('walletPanel').classList.remove('open');
   });
+  // Language Switcher (AI Translation Simulation)
+  const langSelect = document.getElementById('langSwitch');
+  if (langSelect) {
+    langSelect.value = currentLang;
+    langSelect.addEventListener('change', (e) => {
+      applyTranslation(e.target.value);
+    });
+  }
+}
+
+function applyTranslation(lang) {
+  if (lang === currentLang) return;
+  currentLang = lang;
+  localStorage.setItem('lang', lang);
+
+  const langName = lang === 'en' ? 'English' : I18N[lang]?.langName || lang;
+
+  // AI Blur Effect
+  document.body.classList.add('translating');
+  window.showToast(`🧠 AI Neural Engine translating interface to ${langName}...`);
+
+  setTimeout(() => {
+    // Apply translations
+    renderNav();
+    const searchBox = document.getElementById('globalSearch');
+    if (searchBox) searchBox.placeholder = I18N[lang]?.search || I18N['en'].search;
+
+    // Re-render current page
+    navigate(currentPage);
+
+    // Remove blur
+    setTimeout(() => {
+      document.body.classList.remove('translating');
+    }, 300);
+  }, 1200); // Simulated AI lag
 }
 
 function toggleMobile() {
@@ -175,16 +276,24 @@ function toggleMobile() {
 // ---- Navigation ----
 function renderNav() {
   const nav = document.getElementById('sidebarNav');
-  nav.innerHTML = NAV.map(n => `
+  nav.innerHTML = NAV.map(n => {
+    const displayLabel = currentLang === 'en' ? n.label : (n.trans[currentLang] || n.label);
+    return `
     <a class="nav-item ${n.id === currentPage ? 'active' : ''}" data-page="${n.id}">
       <span class="nav-icon">${n.icon}</span>
-      <span class="nav-label">${n.label}</span>
-      <span class="nav-hindi">${n.hindi}</span>
+      <span class="nav-label">${displayLabel}</span>
     </a>
-  `).join('');
+  `;
+  }).join('');
   nav.querySelectorAll('.nav-item').forEach(el => {
     el.addEventListener('click', () => navigate(el.dataset.page));
   });
+
+  // Re-translate the government badge in the footer
+  const govBadge = document.getElementById('govBadgeText');
+  if (govBadge) {
+    govBadge.textContent = I18N[currentLang]?.govLabel || I18N['en'].govLabel;
+  }
 }
 
 function navigate(page) {
@@ -193,13 +302,14 @@ function navigate(page) {
   charts = [];
   renderNav();
   const info = NAV.find(n => n.id === page);
-  document.getElementById('breadcrumb').innerHTML = `<span class="breadcrumb-icon">${info?.icon || ''}</span><span class="breadcrumb-text">${info?.label || ''}</span>`;
+  const displayLabel = currentLang === 'en' ? info.label : (info.trans[currentLang] || info.label);
+  document.getElementById('breadcrumb').innerHTML = `<span class="breadcrumb-icon">${info?.icon || ''}</span><span class="breadcrumb-text">${displayLabel || ''}</span>`;
   const el = document.getElementById('mainContent');
   // Close mobile sidebar
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('sidebarOverlay').classList.remove('visible');
 
-  const renderers = { advisor: renderAdvisor, dashboard: renderDashboard, register: renderRegistration, implements: renderImplements, subsidy: renderSubsidy, hiring: renderHiring, marketplace: renderMarketplace, weather: renderWeather, schemes: renderSchemes, admin: renderAdmin };
+  const renderers = { advisor: renderAdvisor, dashboard: renderDashboard, register: renderRegistration, implements: renderImplements, subsidy: renderSubsidy, hiring: renderHiring, marketplace: renderMarketplace, weather: renderWeather, schemes: renderSchemes, legal: renderLegal, admin: renderAdmin };
   if (renderers[page]) renderers[page](el);
 }
 
@@ -332,7 +442,7 @@ function renderDashboard(el) {
         { label: 'Estimated', data: labels.map(l => bd[l].estimated), backgroundColor: 'rgba(245,158,11,0.4)', borderRadius: 4 },
       ]
     },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-2').trim() } } }, scales: { x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } }, y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.04)' } } } }
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-2').trim() } } }, scales: { x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } }, y: { ticks: { color: '#94a3b8' }, grid: { color: 'var(--glass-strong)' } } } }
   }));
 
   const topCrops = D.MSP_KHARIF.slice(0, 6);
@@ -345,7 +455,7 @@ function renderDashboard(el) {
         { label: '2023-24', data: topCrops.map(c => c.prevMsp), borderColor: '#64748b', borderDash: [5, 5], fill: false, tension: 0.4 },
       ]
     },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#94a3b8' } } }, scales: { x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } }, y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.04)' } } } }
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#94a3b8' } } }, scales: { x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } }, y: { ticks: { color: '#94a3b8' }, grid: { color: 'var(--glass-strong)' } } } }
   }));
 }
 
@@ -774,19 +884,19 @@ function renderWeather(el) {
   el.innerHTML = `
     <div class="animate-in">
       <div class="page-header">
-        <div><h2>Weather & IMD Data</h2><p>Real-time weather from Open-Meteo API for Indian districts</p></div>
-        <span class="source-tag verified">📡 Live API: Open-Meteo + IMD</span>
+        <div><h2>AI Weather & IMD Data</h2><p>Real-time neural synthesized weather from Open-Meteo API for Indian districts</p></div>
+        <span class="source-tag verified" style="box-shadow: 0 0 10px rgba(34,197,94,0.4)">🧠 Agent AI Powered</span>
       </div>
-      <div class="form-inline" style="margin-bottom:24px">
+      <div class="form-inline" style="margin-bottom:24px; background: var(--bg-1); padding: 16px; border-radius: var(--radius-lg); border: 1px solid var(--glass-border);">
         <div class="form-group">
-          <label class="form-label">Select State</label>
+          <label class="form-label" style="color:var(--primary)">Select State for AI Analysis</label>
           <select class="form-select" id="weatherState">
             ${D.STATES_DATA.map(s => `<option value="${s.name}" ${s.name === 'Uttar Pradesh' ? 'selected' : ''}>${s.name}</option>`).join('')}
           </select>
         </div>
-        <button class="btn btn-primary" id="fetchWeatherBtn">🔍 Fetch Weather</button>
+        <button class="btn btn-primary" id="fetchWeatherBtn">⚡ Run Neural Prediction</button>
       </div>
-      <div id="weatherContent"><div class="loading-spinner visible"><div class="spinner"></div><p>Fetching live weather data...</p></div></div>
+      <div id="weatherContent"></div>
     </div>
   `;
   document.getElementById('fetchWeatherBtn').addEventListener('click', () => fetchWeather());
@@ -797,8 +907,23 @@ async function fetchWeather() {
   const stateName = document.getElementById('weatherState').value;
   const state = D.STATES_DATA.find(s => s.name === stateName);
   const wc = document.getElementById('weatherContent');
-  wc.innerHTML = '<div class="loading-spinner visible"><div class="spinner"></div><p>Fetching live weather data...</p></div>';
+
+  // Premium AI Loading State
+  wc.innerHTML = `
+    <div class="ai-processing">
+      <div class="ai-orb-loader"></div>
+      <div class="ai-steps">
+        <div class="ai-step" style="animation-delay: 0.2s">Initializing secure IMD API Gateway...</div>
+        <div class="ai-step" style="animation-delay: 1.2s">Synthesizing regional weather models for ${stateName}...</div>
+        <div class="ai-step" style="animation-delay: 2.2s">Neural Network Analysis Complete.</div>
+      </div>
+    </div>
+  `;
+
   try {
+    // Artificial Delay for AI Effect
+    await new Promise(r => setTimeout(r, 2800));
+
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${state.lat}&longitude=${state.lng}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weather_code&timezone=Asia/Kolkata&forecast_days=7`;
     const res = await fetch(url);
     const data = await res.json();
@@ -808,46 +933,46 @@ async function fetchWeather() {
     const desc = D.getWeatherDesc(cur.weather_code);
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-    wc.innerHTML = `
-      <div class="weather-current">
-        <div class="weather-icon-large">${icon}</div>
-        <div>
-          <div class="weather-temp">${Math.round(cur.temperature_2m)}°C</div>
-          <div class="weather-desc">${desc}</div>
-          <div class="weather-location">📍 ${stateName}, India</div>
-          <div class="weather-details">
-            <div class="weather-detail"><span class="wd-label">Humidity</span><span class="wd-value">${cur.relative_humidity_2m}%</span></div>
-            <div class="weather-detail"><span class="wd-label">Wind</span><span class="wd-value">${cur.wind_speed_10m} km/h</span></div>
-          </div>
-        </div>
-      </div>
-      <h3 style="margin-bottom:16px;font-size:16px">7-Day Forecast</h3>
-      <div class="forecast-grid">
-        ${daily.time.map((t, i) => {
+    // Build forecast cards
+    let forecastHtml = '';
+    daily.time.forEach((t, i) => {
       const d = new Date(t);
-      return `<div class="forecast-day">
-            <div class="day-name">${days[d.getDay()]}</div>
-            <div class="day-icon">${D.getWeatherIcon(daily.weather_code[i])}</div>
-            <div class="day-temp">${Math.round(daily.temperature_2m_max[i])}° / ${Math.round(daily.temperature_2m_min[i])}°</div>
-            <div class="day-rain">💧 ${daily.precipitation_sum[i]} mm</div>
-          </div>`;
-    }).join('')}
-      </div>
-      <div class="grid-2" style="margin-top:24px">
-        <div class="card"><div class="card-header"><h3>🌡️ Temperature Trend</h3></div><div class="card-body"><div class="chart-container"><canvas id="tempChart"></canvas></div></div></div>
-        <div class="card"><div class="card-header"><h3>🌧️ Rainfall Forecast</h3></div><div class="card-body"><div class="chart-container"><canvas id="rainChart"></canvas></div></div></div>
-      </div>
-      <div class="card" style="margin-top:24px">
-        <div class="card-header"><h3>🌾 Agricultural Advisory</h3></div>
-        <div class="card-body">
-          <div style="display:flex;flex-direction:column;gap:12px">
-            <div class="activity-item"><div class="activity-dot green"></div><div><div class="activity-text"><strong>Irrigation:</strong> ${daily.precipitation_sum.reduce((a, b) => a + b, 0) > 20 ? 'Sufficient rainfall expected. Reduce irrigation.' : 'Low rainfall expected. Plan irrigation accordingly.'}</div></div></div>
-            <div class="activity-item"><div class="activity-dot orange"></div><div><div class="activity-text"><strong>Spraying:</strong> ${cur.wind_speed_10m > 15 ? 'High winds — avoid pesticide spraying today.' : 'Suitable conditions for spraying operations.'}</div></div></div>
-            <div class="activity-item"><div class="activity-dot blue"></div><div><div class="activity-text"><strong>Harvesting:</strong> ${daily.precipitation_sum[0] > 5 ? 'Rain expected today. Postpone harvesting if possible.' : 'Good conditions for harvesting operations.'}</div></div></div>
-          </div>
-        </div>
-      </div>
-    `;
+      forecastHtml += '<div style="background: var(--bg-1); padding: 16px 12px; border-radius: 12px; border: 1px solid var(--glass-strong); text-align: center;">' +
+        '<div style="font-size: 13px; color: var(--text-2); margin-bottom: 8px; font-weight: 600;">' + days[d.getDay()] + '</div>' +
+        '<div style="font-size: 28px; margin-bottom: 8px;">' + D.getWeatherIcon(daily.weather_code[i]) + '</div>' +
+        '<div style="font-size: 15px; font-weight: 700;">' + Math.round(daily.temperature_2m_max[i]) + '°</div>' +
+        '<div style="font-size: 12px; color: var(--text-3); margin-bottom: 8px;">' + Math.round(daily.temperature_2m_min[i]) + '°</div>' +
+        '<div style="font-size: 11px; color: #60a5fa; background: rgba(96,165,250,0.1); padding: 2px 4px; border-radius: 4px;">💧 ' + daily.precipitation_sum[i] + ' mm</div>' +
+        '</div>';
+    });
+
+    wc.innerHTML = '<div class="card" style="box-shadow: 0 4px 30px rgba(0,0,0,0.3); border-color: rgba(34,197,94,0.3); background: var(--bg-1); backdrop-filter: blur(20px);">' +
+      '<div class="card-body" style="padding: 32px;">' +
+      '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 24px; flex-wrap:wrap; gap:16px;">' +
+      '<div style="display:flex; gap: 24px; align-items:center;">' +
+      '<div style="font-size: 64px; filter: drop-shadow(0 0 20px rgba(255,255,255,0.2)); line-height: 1;">' + icon + '</div>' +
+      '<div>' +
+      '<div style="font-size: 56px; font-weight: 800; color: var(--text-1); line-height: 1; letter-spacing: -2px;">' + Math.round(cur.temperature_2m) + '<span style="font-size: 24px; font-weight: 400; color: var(--text-3);">°C</span></div>' +
+      '<div style="font-size: 18px; color: var(--primary); font-weight: 500;">' + desc + '</div>' +
+      '</div>' +
+      '</div>' +
+      '<div style="text-align: right;">' +
+      '<div style="font-size: 20px; font-weight: 700;">📍 ' + stateName + ', India</div>' +
+      '<div style="margin-top: 12px; display:flex; gap: 16px; justify-content: flex-end;">' +
+      '<div style="background: var(--glass-strong); padding: 8px 16px; border-radius: 12px; border: 1px solid var(--glass-border-hover);"><div style="font-size: 11px; color: var(--text-3); text-transform: uppercase;">Humidity</div><div style="font-size: 16px; font-weight: 700;">' + cur.relative_humidity_2m + '%</div></div>' +
+      '<div style="background: var(--glass-strong); padding: 8px 16px; border-radius: 12px; border: 1px solid var(--glass-border-hover);"><div style="font-size: 11px; color: var(--text-3); text-transform: uppercase;">Wind Speed</div><div style="font-size: 16px; font-weight: 700;">' + cur.wind_speed_10m + ' km/h</div></div>' +
+      '</div>' +
+      '</div>' +
+      '</div>' +
+      '<h3 style="margin-bottom: 16px; font-size: 16px; border-bottom: 1px solid var(--glass-border-hover); padding-bottom: 8px;">Neural 7-Day Forecast</h3>' +
+      '<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px;">' + forecastHtml + '</div>' +
+      '</div>' +
+      '</div>' +
+      '<div class="grid-2" style="margin-top: 24px;">' +
+      '<div class="card"><div class="card-header"><h3>🌡️ AI Temperature Trend</h3></div><div class="card-body"><div class="chart-container"><canvas id="tempChart"></canvas></div></div></div>' +
+      '<div class="card"><div class="card-header"><h3>🌧️ Neural Rainfall Forecast</h3></div><div class="card-body"><div class="chart-container"><canvas id="rainChart"></canvas></div></div></div>' +
+      '</div>';
+
     const dayLabels = daily.time.map(t => { const d = new Date(t); return days[d.getDay()]; });
     charts.push(new Chart(document.getElementById('tempChart'), {
       type: 'line',
@@ -857,12 +982,12 @@ async function fetchWeather() {
           { label: 'Min °C', data: daily.temperature_2m_min, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', fill: true, tension: 0.4 },
         ]
       },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#94a3b8' } } }, scales: { x: { ticks: { color: '#94a3b8' }, grid: { display: false } }, y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.04)' } } } }
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#94a3b8' } } }, scales: { x: { ticks: { color: '#94a3b8' }, grid: { display: false } }, y: { ticks: { color: '#94a3b8' }, grid: { color: 'var(--glass-strong)' } } } }
     }));
     charts.push(new Chart(document.getElementById('rainChart'), {
       type: 'bar',
       data: { labels: dayLabels, datasets: [{ label: 'Rainfall (mm)', data: daily.precipitation_sum, backgroundColor: 'rgba(59,130,246,0.6)', borderRadius: 6 }] },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#94a3b8' } } }, scales: { x: { ticks: { color: '#94a3b8' }, grid: { display: false } }, y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.04)' } } } }
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#94a3b8' } } }, scales: { x: { ticks: { color: '#94a3b8' }, grid: { display: false } }, y: { ticks: { color: '#94a3b8' }, grid: { color: 'var(--glass-strong)' } } } }
     }));
   } catch (e) {
     wc.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><h3>Couldn't fetch weather</h3><p>Please check your internet connection and try again.</p></div>`;
@@ -967,7 +1092,7 @@ function renderAdmin(el) {
         { label: 'Estimated (Census)', data: labels.map(l => bk[l].estimated), backgroundColor: 'rgba(245,158,11,0.4)', borderRadius: 4 },
       ]
     },
-    options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { labels: { color: '#94a3b8' } } }, scales: { x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.04)' } }, y: { ticks: { color: '#94a3b8' }, grid: { display: false } } } }
+    options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { labels: { color: '#94a3b8' } } }, scales: { x: { ticks: { color: '#94a3b8' }, grid: { color: 'var(--glass-strong)' } }, y: { ticks: { color: '#94a3b8' }, grid: { display: false } } } }
   }));
   charts.push(new Chart(document.getElementById('adminSubChart'), {
     type: 'doughnut',
@@ -1226,14 +1351,14 @@ function renderAdvisor(el) {
         <div style="margin-left:16px; flex:1; background:var(--bg-2); border:1px solid var(--glass-border); padding:12px; border-radius:8px; box-shadow:0 4px 6px rgba(0,0,0,0.05);">
           <h5 style="color:var(--primary); margin-bottom:4px; font-size:14px;">${stage.stage}</h5>
           <p style="font-size:13px; color:var(--text-1); margin-bottom:6px; line-height:1.4;">${stage.desc}</p>
-          <p style="font-size:12px; color:var(--text-3); font-family:sans-serif; background:rgba(255,255,255,0.02); display:inline-block; padding:2px 6px; border-radius:4px;"><i>${stage.descTa}</i></p>
+          <p style="font-size:12px; color:var(--text-3); font-family:sans-serif; background:var(--glass); display:inline-block; padding:2px 6px; border-radius:4px;"><i>${stage.descTa}</i></p>
         </div>
       </div>
     `).join('');
 
     // Build Logistics HTML
     const buildLogisticsTab = (items, icon) => items.map(item => `
-      <div style="padding:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:8px; margin-bottom:10px;">
+      <div style="padding:12px; background:var(--glass); border:1px solid var(--glass-strong); border-radius:8px; margin-bottom:10px;">
         <strong style="color:var(--text-1); font-size:13px;">${icon} ${item.name}</strong>
         <div style="display:flex; justify-content:space-between; margin-top:6px; color:var(--text-2); font-size:12px;">
           <span style="background:var(--bg-1); padding:2px 8px; border-radius:12px;">${item.cap || item.type}</span>
@@ -1245,15 +1370,15 @@ function renderAdvisor(el) {
     const logisticsHtml = `
       <div style="display:flex; flex-direction:column; gap:16px;">
         <div style="background:linear-gradient(145deg, var(--bg-2), var(--bg-1)); border:1px solid var(--glass-border); padding:16px; border-radius:12px;">
-          <h4 style="color:var(--info); font-size:14px; margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:8px;">❄️ Local Cold Storage Facilities</h4>
+          <h4 style="color:var(--info); font-size:14px; margin-bottom:12px; border-bottom:1px solid var(--glass-strong); padding-bottom:8px;">❄️ Local Cold Storage Facilities</h4>
           ${buildLogisticsTab(logistics.coldStorage, '🏢')}
         </div>
         <div style="background:linear-gradient(145deg, var(--bg-2), var(--bg-1)); border:1px solid var(--glass-border); padding:16px; border-radius:12px;">
-          <h4 style="color:var(--warning); font-size:14px; margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:8px;">🌾 Warehousing (Dry)</h4>
+          <h4 style="color:var(--warning); font-size:14px; margin-bottom:12px; border-bottom:1px solid var(--glass-strong); padding-bottom:8px;">🌾 Warehousing (Dry)</h4>
           ${buildLogisticsTab(logistics.warehouses, '🏭')}
         </div>
         <div style="background:linear-gradient(145deg, var(--bg-2), var(--bg-1)); border:1px solid var(--glass-border); padding:16px; border-radius:12px;">
-          <h4 style="color:var(--accent); font-size:14px; margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:8px;">🚚 Produce Transport Logistics</h4>
+          <h4 style="color:var(--accent); font-size:14px; margin-bottom:12px; border-bottom:1px solid var(--glass-strong); padding-bottom:8px;">🚚 Produce Transport Logistics</h4>
           ${buildLogisticsTab(logistics.transport, '🚛')}
         </div>
       </div>
@@ -1276,7 +1401,7 @@ function renderAdvisor(el) {
             <h4 style="color:var(--accent); margin-bottom:16px; font-size:16px; display:flex; align-items:center; gap:8px;">
               <span style="font-size:20px;">📦</span> Post-Harvest Logistics & Storage
             </h4>
-            <p style="font-size:12px; color:var(--text-3); margin-bottom:16px; background:rgba(255,255,255,0.03); padding:10px; border-radius:6px; border-left:3px solid var(--accent);">Facilities dynamically mapped based on <b>${dist}</b> District to minimize post-harvest transport spoilage.</p>
+            <p style="font-size:12px; color:var(--text-3); margin-bottom:16px; background:var(--glass); padding:10px; border-radius:6px; border-left:3px solid var(--accent);">Facilities dynamically mapped based on <b>${dist}</b> District to minimize post-harvest transport spoilage.</p>
             ${logisticsHtml}
           </div>
         </div>

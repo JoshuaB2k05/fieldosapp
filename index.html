@@ -4,19 +4,55 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Primary Meta Tags & SEO Stuff -->
     <title>FIELD OS 🌾 | Indian Farmer Dashboard</title>
+    <meta name="title" content="FIELD OS 🌾 | Indian Farmer Dashboard" />
     <meta name="description"
-        content="Comprehensive dashboard for Indian farmers — manage implements, calculate subsidies, access custom hiring, buy/sell equipment, and get real-time weather & market data from IMD and Agricultural departments." />
+        content="Comprehensive dashboard for Indian farmers — manage implements, calculate subsidies, access custom hiring, buy/sell equipment, and get real-time weather & market data." />
     <meta name="keywords"
-        content="Indian agriculture, farmer dashboard, subsidy calculator, SMAM, custom hiring, tractor subsidy, implement management, MSP prices, IMD weather" />
+        content="Indian agriculture, farmer dashboard, subsidy calculator, SMAM, custom hiring, tractor subsidy, implement management, MSP prices, IMD weather, Agri-tech India" />
+    <meta name="author" content="Government of India Initiative" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://field-os-dashboard.example.com/" />
+    <meta property="og:title" content="FIELD OS 🌾 | Indian Farmer Dashboard" />
+    <meta property="og:description"
+        content="Comprehensive dashboard for Indian farmers — manage implements, calculate subsidies, access custom hiring, buy/sell equipment, and get real-time weather & market data." />
+    <meta property="og:image" content="https://field-os-dashboard.example.com/og-image.jpg" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://field-os-dashboard.example.com/" />
+    <meta property="twitter:title" content="FIELD OS 🌾 | Indian Farmer Dashboard" />
+    <meta property="twitter:description"
+        content="Comprehensive dashboard for Indian farmers — manage implements, calculate subsidies, access custom hiring, buy/sell equipment, and get real-time weather & market data." />
+    <meta property="twitter:image" content="https://field-os-dashboard.example.com/og-image.jpg" />
+
+    <!-- Webmaster Verification Placeholders -->
+    <meta name="google-site-verification" content="google-site-verification-placeholder-code" />
+    <meta name="msvalidate.01" content="bing-site-verification-placeholder-code" />
+
+    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌾</text></svg>" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet" />
 </head>
 
 <body>
     <div id="app">
+        <!-- Animated Background Orbs -->
+        <div class="bg-orbs">
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+            <div class="orb orb-3"></div>
+        </div>
+
         <!-- Sidebar Navigation -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
@@ -32,9 +68,9 @@
             <nav class="sidebar-nav" id="sidebarNav"></nav>
 
             <div class="sidebar-footer">
-                <div class="gov-badge">
+                <div class="gov-badge" id="govBadgeContainer">
                     <span>🏛️</span>
-                    <span>Govt. of India Initiative</span>
+                    <span id="govBadgeText">Govt. of India Initiative</span>
                 </div>
                 <div class="user-card" id="userCard">
                     <div class="user-avatar">👨‍🌾</div>
