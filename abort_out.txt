@@ -1,0 +1,6 @@
+error: The following untracked working tree files would be overwritten by reset:
+	node_modules/@esbuild/win32-x64/esbuild.exe
+	node_modules/@rollup/rollup-win32-x64-msvc/rollup.win32-x64-msvc.node
+Please move or remove them before you reset.
+Aborting
+fatal: could not move back to f0c104163007132f30a03adbfdd2e7b278a8ed38
