@@ -1059,7 +1059,7 @@ function renderAdmin(el) {
     <div class="animate-in">
       <div class="page-header">
         <div><h2>Admin Panel — ${bd.name}</h2><p>${bd.district}, ${bd.state} | Block Development Officer Dashboard</p></div>
-        <div class="page-actions"><button class="btn btn-primary" onclick="window.showToast('Report generation queued')">📊 Generate Report</button><button class="btn btn-outline" onclick="window.showToast('Downloading ZIP data...')">📥 Download Data</button></div>
+        <div class="page-actions"><button class="btn btn-primary" onclick="window._downloadAdminCSV()">📊 Generate Report</button><button class="btn btn-outline" onclick="window._downloadAdminCSV()">📥 Download Data</button></div>
       </div>
       <div class="stats-grid">
         <div class="stat-card green"><div class="stat-top"><div class="stat-icon">🏘️</div></div><div class="stat-value">${bd.totalVillages}</div><div class="stat-label">Total Villages</div></div>
@@ -1125,6 +1125,29 @@ function renderAdmin(el) {
     data: { labels: ['Approved', 'Pending', 'Rejected'], datasets: [{ data: [bd.subsidyApplications - bd.pendingApprovals - 12, bd.pendingApprovals, 12], backgroundColor: ['#22c55e', '#f59e0b', '#ef4444'] }] },
     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', padding: 12 } } } }
   }));
+
+  window._downloadAdminCSV = () => {
+    let csvContent = "Block,District,State,Total Villages,Registered Farmers,Pending Approvals,Total Area (ha)\n";
+    csvContent += `"${bd.name}","${bd.district}","${bd.state}",${bd.totalVillages},${bd.registeredFarmers},${bd.pendingApprovals},${bd.totalArea}\n\n`;
+
+    csvContent += "Date,Farmer,Village,Implement,Verified Status\n";
+    bd.recentRegistrations.forEach(r => {
+      const status = r.verified ? 'Verified' : 'Pending';
+      csvContent += `"${r.date}","${r.farmer}","${r.village}","${r.implement}","${status}"\n`;
+    });
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `Admin_Report_${bd.name.replace(/\\s+/g, '_')}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    window.showToast('CSV downloaded successfully!', true);
+  };
 }
 
 // ============ A-Z AGRI ADVISOR & CALCULATOR ============
