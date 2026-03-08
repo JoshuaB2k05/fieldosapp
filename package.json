@@ -1,9 +1,9 @@
 {
-  "name": "krishi-mitra",
+  "name": "fieldos",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Krishi Mitra - Comprehensive Indian Farmer Dashboard",
+  "description": "FIELD OS - Comprehensive Indian Farmer Dashboard",
   "scripts": {
     "dev": "vite",
     "build": "npx vite build",

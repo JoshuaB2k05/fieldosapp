@@ -1,5 +1,5 @@
 // ============================================================
-// KRISHI MITRA — Real Indian Agricultural Data
+// FIELD OS — Real Indian Agricultural Data
 // Sources: Ministry of Agriculture, SMAM Portal, IMD, eNAM
 // ============================================================
 
