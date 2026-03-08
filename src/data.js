@@ -7,8 +7,7 @@
 // Source: Commission for Agricultural Costs & Prices (CACP)
 // Year: 2024-25
 
-window.D = window.D || {};
-window.D.MSP_KHARIF = [
+export const MSP_KHARIF = [
     { crop: 'Paddy (Common)', msp: 2300, unit: '₹/qtl', prevMsp: 2183, icon: '🌾' },
     { crop: 'Paddy (Grade A)', msp: 2320, unit: '₹/qtl', prevMsp: 2203, icon: '🌾' },
     { crop: 'Jowar (Hybrid)', msp: 3371, unit: '₹/qtl', prevMsp: 3180, icon: '🌿' },
@@ -28,8 +27,7 @@ window.D.MSP_KHARIF = [
     { crop: 'Cotton (Long)', msp: 7521, unit: '₹/qtl', prevMsp: 7020, icon: '🏵️' },
 ];
 
-window.D = window.D || {};
-window.D.MSP_RABI = [
+export const MSP_RABI = [
     { crop: 'Wheat', msp: 2275, unit: '₹/qtl', prevMsp: 2125, icon: '🌾' },
     { crop: 'Barley', msp: 1850, unit: '₹/qtl', prevMsp: 1735, icon: '🌾' },
     { crop: 'Gram (Chana)', msp: 5650, unit: '₹/qtl', prevMsp: 5335, icon: '🫘' },
@@ -38,14 +36,12 @@ window.D.MSP_RABI = [
     { crop: 'Safflower', msp: 5800, unit: '₹/qtl', prevMsp: 5650, icon: '🌸' },
 ];
 
-window.D = window.D || {};
-window.D.SUGARCANE_FRP = { price: 340, unit: '₹/qtl', year: '2024-25' };
+export const SUGARCANE_FRP = { price: 340, unit: '₹/qtl', year: '2024-25' };
 
 // ---- Subsidy Data (SMAM - Sub Mission on Agricultural Mechanization) ----
 // Source: SMAM Portal, Ministry of Agriculture
 
-window.D = window.D || {};
-window.D.SUBSIDY_CATEGORIES = {
+export const SUBSIDY_CATEGORIES = {
     general: { label: 'General Category', subsidyPercent: 40, color: '#3b82f6' },
     sc_st: { label: 'SC/ST Farmer', subsidyPercent: 50, color: '#8b5cf6' },
     small_marginal: { label: 'Small & Marginal Farmer', subsidyPercent: 50, color: '#22c55e' },
@@ -53,8 +49,7 @@ window.D.SUBSIDY_CATEGORIES = {
     northeast: { label: 'North-East Region', subsidyPercent: 60, color: '#f59e0b' },
 };
 
-window.D = window.D || {};
-window.D.TRACTOR_SUBSIDIES = [
+export const TRACTOR_SUBSIDIES = [
     { hpRange: 'Up to 8 HP (Power Tiller)', general: { percent: 40, max: 75000 }, scst: { percent: 50, max: 100000 }, approxCost: 200000 },
     { hpRange: '8-20 HP (Mini Tractor)', general: { percent: 25, max: 100000 }, scst: { percent: 25, max: 125000 }, approxCost: 400000 },
     { hpRange: '20-35 HP (Medium Tractor)', general: { percent: 25, max: 75000 }, scst: { percent: 25, max: 100000 }, approxCost: 550000 },
@@ -62,8 +57,7 @@ window.D.TRACTOR_SUBSIDIES = [
     { hpRange: 'Above 55 HP (Heavy Tractor)', general: { percent: 0, max: 0 }, scst: { percent: 0, max: 0 }, approxCost: 1200000, note: 'Not covered under SMAM. State schemes may apply.' },
 ];
 
-window.D = window.D || {};
-window.D.IMPLEMENT_SUBSIDIES = [
+export const IMPLEMENT_SUBSIDIES = [
     { id: 1, name: 'MB Plough', category: 'Tillage', subsidyPercent: 50, maxSubsidy: 16000, approxCost: 35000, icon: '🔩' },
     { id: 2, name: 'Disc Plough', category: 'Tillage', subsidyPercent: 50, maxSubsidy: 30000, approxCost: 65000, icon: '⚙️' },
     { id: 3, name: 'Cultivator', category: 'Tillage', subsidyPercent: 50, maxSubsidy: 16000, approxCost: 30000, icon: '🔧' },
@@ -94,8 +88,7 @@ window.D.IMPLEMENT_SUBSIDIES = [
 // ---- Custom Hiring Rates ----
 // Source: CHC Market rates (average across India)
 
-window.D = window.D || {};
-window.D.HIRING_SERVICES = [
+export const HIRING_SERVICES = [
     { id: 1, service: 'Tractor with Cultivator', rate: 600, unit: 'per hour', icon: '🚜', category: 'Tillage', description: 'Basic field preparation with 35-45 HP tractor' },
     { id: 2, service: 'Tractor with Rotavator', rate: 1000, unit: 'per hour', icon: '🚜', category: 'Tillage', description: 'Fine soil preparation for seedbed' },
     { id: 3, service: 'Tractor with MB Plough', rate: 700, unit: 'per hour', icon: '🚜', category: 'Tillage', description: 'Deep ploughing for heavy soils' },
@@ -116,8 +109,7 @@ window.D.HIRING_SERVICES = [
 // ---- Government Schemes ----
 // Source: Ministry of Agriculture & Farmer Welfare
 
-window.D = window.D || {};
-window.D.GOV_SCHEMES = [
+export const GOV_SCHEMES = [
     {
         id: 'smam',
         name: 'SMAM (Sub-Mission on Agricultural Mechanization)',
@@ -218,15 +210,13 @@ window.D.GOV_SCHEMES = [
 
 // ---- Implement Catalog (for Management module) ----
 
-window.D = window.D || {};
-window.D.IMPLEMENT_CATEGORIES = [
+export const IMPLEMENT_CATEGORIES = [
     'Tractor', 'Power Tiller', 'Tillage', 'Sowing', 'Transplanting',
     'Plant Protection', 'Harvesting', 'Post-Harvest', 'Irrigation',
     'Residue Management', 'Land Development', 'Transport'
 ];
 
-window.D = window.D || {};
-window.D.SAMPLE_IMPLEMENTS = [
+export const SAMPLE_IMPLEMENTS = [
     { id: 1, name: 'Mahindra 575 DI', category: 'Tractor', hp: 45, year: 2022, condition: 'Good', status: 'active', owner: 'Ramesh Yadav', village: 'Chandpur', verified: true, value: 625000 },
     { id: 2, name: 'Sonalika DI 60 RX', category: 'Tractor', hp: 60, year: 2021, condition: 'Excellent', status: 'active', owner: 'Suresh Patel', village: 'Mohammadpur', verified: true, value: 850000 },
     { id: 3, name: 'Swaraj 744 FE', category: 'Tractor', hp: 48, year: 2020, condition: 'Good', status: 'active', owner: 'Krishna Reddy', village: 'Nandgaon', verified: true, value: 595000 },
@@ -243,8 +233,7 @@ window.D.SAMPLE_IMPLEMENTS = [
 
 // ---- Marketplace Sample Listings ----
 
-window.D = window.D || {};
-window.D.MARKETPLACE_LISTINGS = [
+export const MARKETPLACE_LISTINGS = [
     { id: 1, title: 'Mahindra 275 DI - Well Maintained', type: 'sale', category: 'Tractor', price: 350000, location: 'Varanasi, UP', condition: 'Good', year: 2018, image: '🚜', seller: 'Amit Kumar', phone: '98XXXXX001', description: '1200 hours, single owner, new tyres, all papers ready', featured: true },
     { id: 2, title: 'Rotavator 5ft - Like New', type: 'sale', category: 'Tillage', price: 55000, location: 'Lucknow, UP', condition: 'Excellent', year: 2023, image: '⚙️', seller: 'FPO Green Fields', phone: '98XXXXX002', description: 'Used for one season only, with mounting kit' },
     { id: 3, title: 'New Holland 3630 TX Plus', type: 'sale', category: 'Tractor', price: 520000, location: 'Jaipur, Rajasthan', condition: 'Good', year: 2019, image: '🚜', seller: 'Rajesh Meena', phone: '98XXXXX003', description: '55 HP, AC cabin, 2000 hrs, well maintained', featured: true },
@@ -257,8 +246,7 @@ window.D.MARKETPLACE_LISTINGS = [
 
 // ---- States & Districts (for weather/location selection) ----
 
-window.D = window.D || {};
-window.D.STATES_DATA = [
+export const STATES_DATA = [
     { name: 'Andhra Pradesh', capital: 'Amaravati', lat: 15.9129, lng: 79.74 },
     { name: 'Assam', capital: 'Dispur', lat: 26.2006, lng: 92.9376 },
     { name: 'Bihar', capital: 'Patna', lat: 25.6093, lng: 85.1376 },
@@ -282,8 +270,7 @@ window.D.STATES_DATA = [
 
 // ---- Block Level Admin Data ----
 
-window.D = window.D || {};
-window.D.BLOCK_DATA = {
+export const BLOCK_DATA = {
     name: 'Chandpur Block',
     district: 'Varanasi',
     state: 'Uttar Pradesh',
@@ -320,8 +307,7 @@ window.D.BLOCK_DATA = {
 
 // ---- Crop Calendar ----
 
-window.D = window.D || {};
-window.D.CROP_CALENDAR = {
+export const CROP_CALENDAR = {
     kharif: { season: 'Kharif (खरीफ)', sowing: 'Jun-Jul', harvesting: 'Oct-Nov', crops: ['Paddy', 'Maize', 'Bajra', 'Tur', 'Moong', 'Soybean', 'Cotton', 'Sugarcane', 'Groundnut'] },
     rabi: { season: 'Rabi (रबी)', sowing: 'Oct-Nov', harvesting: 'Mar-Apr', crops: ['Wheat', 'Barley', 'Gram', 'Masur', 'Mustard', 'Linseed', 'Potato', 'Pea'] },
     zaid: { season: 'Zaid (ज़ायद)', sowing: 'Mar-Apr', harvesting: 'Jun-Jul', crops: ['Watermelon', 'Muskmelon', 'Cucumber', 'Moong', 'Vegetables', 'Fodder'] },
@@ -329,8 +315,7 @@ window.D.CROP_CALENDAR = {
 
 // ---- Weather Code Mapping (WMO) ----
 
-window.D = window.D || {};
-window.D.WEATHER_CODES = {
+export const WEATHER_CODES = {
     0: { desc: 'Clear sky', icon: '☀️' },
     1: { desc: 'Mainly clear', icon: '🌤️' },
     2: { desc: 'Partly cloudy', icon: '⛅' },
@@ -358,8 +343,7 @@ window.D.WEATHER_CODES = {
 
 // ---- Notifications ----
 
-window.D = window.D || {};
-window.D.SAMPLE_NOTIFICATIONS = [
+export const SAMPLE_NOTIFICATIONS = [
     { id: 1, type: 'subsidy', title: 'Subsidy Application Approved', message: 'Your SMAM subsidy for Rotavator has been approved. Check status.', time: '2 hours ago', read: false },
     { id: 2, type: 'weather', title: 'Heavy Rain Alert', message: 'IMD warns of heavy rainfall in Varanasi district for next 48 hours.', time: '5 hours ago', read: false },
     { id: 3, type: 'hiring', title: 'New Booking Request', message: 'Farmer Vikas Yadav requested combine harvester for 15 acres.', time: '1 day ago', read: false },

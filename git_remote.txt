@@ -1,2 +1,0 @@
-origin	https://github.com/JoshuaB2k05/fieldosapp.git (fetch)
-origin	https://github.com/JoshuaB2k05/fieldosapp.git (push)

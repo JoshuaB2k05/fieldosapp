@@ -1,0 +1,39 @@
+On branch main
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	deleted:    abort_out.txt
+	deleted:    build.log
+	deleted:    commit_check.txt
+	deleted:    db_out.txt
+	modified:   dist/index.html
+	deleted:    git_commit_check.txt
+	deleted:    git_log2.txt
+	deleted:    git_log_out.txt
+	deleted:    git_out.txt
+	deleted:    git_remote.txt
+	deleted:    git_rm.txt
+	deleted:    git_stat.txt
+	deleted:    git_stat5.txt
+	deleted:    git_status.txt
+	deleted:    git_status2.txt
+	deleted:    git_status_check.txt
+	deleted:    git_status_check3.txt
+	deleted:    git_status_check4.txt
+	deleted:    git_tree.txt
+	deleted:    git_tree2.txt
+	deleted:    node_modules_bkp/@esbuild/win32-x64/esbuild.exe
+	deleted:    node_modules_bkp/@rollup/rollup-win32-x64-msvc/rollup.win32-x64-msvc.node
+	deleted:    pull_out.txt
+	deleted:    push_out.txt
+	modified:   src/data.js
+	modified:   vite.config.js
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	fix_data.js
+	fix_data.mjs
+	fix_err.txt
+	fix_stat.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")
