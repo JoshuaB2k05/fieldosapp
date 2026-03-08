@@ -1030,6 +1030,28 @@ function renderSchemes(el) {
   `;
 }
 
+// ============ LEGAL & COMPLIANCE ============
+function renderLegal(el) {
+  el.innerHTML = `
+    <div class="animate-in">
+      <div class="page-header">
+        <div><h2>Legal & Compliance</h2><p>Terms of service, privacy policy and government data usage guidelines</p></div>
+      </div>
+      <div class="card" style="margin-bottom:24px">
+        <div class="card-header"><h3>Data Privacy & Security</h3></div>
+        <div class="card-body">
+          <p style="color:var(--text-2); margin-bottom:12px; line-height:1.6">All agricultural and farm metrics data is strictly handled according to the Government of India's Personal Data Protection framework.</p>
+          <ul style="color:var(--text-3); margin-left:20px; line-height:1.6; font-size:14px">
+            <li>Aadhar details are encrypted and never shared with third parties.</li>
+            <li>Implement registration data is utilized solely for block-level statistical analysis.</li>
+            <li>Subsidy wallet transactions are audited by MoA&FW compliance servers.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 // ============ ADMIN PANEL ============
 function renderAdmin(el) {
   const bd = D.BLOCK_DATA;
