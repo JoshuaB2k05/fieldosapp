@@ -1137,25 +1137,38 @@ function renderAdmin(el) {
       csvContent += `"${r.date}","${r.farmer}","${r.village}","${r.implement}","${status}"\n`;
     });
 
-    // Use a universally compatible MIME type for CSV downloads
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", `Admin_Report_${bd.name.replace(/\s+/g, '_')}.csv`);
+    const safeName = bd.name ? bd.name.replace(/[^a-zA-Z0-9]/g, '_') : 'Default';
+    const fileName = `Admin_Report_${safeName}.csv`;
 
-    // Fallback for IE/Edge
-    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-      window.navigator.msSaveOrOpenBlob(blob, `Admin_Report_${bd.name.replace(/\s+/g, '_')}.csv`);
-    } else {
+    try {
+      // Create Base64 Encoded Data URI (Most bulletproof method for forcing extensions)
+      const base64Data = btoa(unescape(encodeURIComponent(csvContent)));
+      const dataUri = `data:text/csv;charset=utf-8;base64,${base64Data}`;
+
+      const link = document.createElement("a");
+      link.href = dataUri;
+      link.download = fileName;
+      link.target = "_blank"; // Provide a fallback target
+
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-    }
 
-    // Revoke URL to prevent memory leaks
-    setTimeout(() => URL.revokeObjectURL(url), 100);
-    window.showToast('CSV downloaded successfully!', true);
+      window.showToast('CSV downloaded successfully!', true);
+    } catch (e) {
+      console.error("CSV Download failed, falling back to Blob", e);
+      // Absolute fallback if btoa fails
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(url), 100);
+      window.showToast('CSV downloaded via Blob fallback', true);
+    }
   };
 }
 
