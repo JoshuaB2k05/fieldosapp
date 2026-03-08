@@ -1127,7 +1127,8 @@ function renderAdmin(el) {
   }));
 
   window._downloadAdminCSV = () => {
-    let csvContent = "Block,District,State,Total Villages,Registered Farmers,Pending Approvals,Total Area (ha)\n";
+    // Add UTF-8 BOM for Excel compatibility
+    let csvContent = "\uFEFFBlock,District,State,Total Villages,Registered Farmers,Pending Approvals,Total Area (ha)\n";
     csvContent += `"${bd.name}","${bd.district}","${bd.state}",${bd.totalVillages},${bd.registeredFarmers},${bd.pendingApprovals},${bd.totalArea}\n\n`;
 
     csvContent += "Date,Farmer,Village,Implement,Verified Status\n";
@@ -1136,16 +1137,24 @@ function renderAdmin(el) {
       csvContent += `"${r.date}","${r.farmer}","${r.village}","${r.implement}","${status}"\n`;
     });
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    // Use a universally compatible MIME type for CSV downloads
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", `Admin_Report_${bd.name.replace(/\\s+/g, '_')}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    link.href = url;
+    link.setAttribute("download", `Admin_Report_${bd.name.replace(/\s+/g, '_')}.csv`);
 
+    // Fallback for IE/Edge
+    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+      window.navigator.msSaveOrOpenBlob(blob, `Admin_Report_${bd.name.replace(/\s+/g, '_')}.csv`);
+    } else {
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // Revoke URL to prevent memory leaks
+    setTimeout(() => URL.revokeObjectURL(url), 100);
     window.showToast('CSV downloaded successfully!', true);
   };
 }
